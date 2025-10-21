@@ -8,7 +8,7 @@ Upload any file with no limits in two just clicks. (Windows 10/11)
 <div>	<a> ♥ Run the Setup.bat</a>
   
    <a> <a>
-<div>  <a> Choose </a>
+<div>  <a> ⭐Choose </a>
   
  <a> <a>
 <div>	<a> [1] Install Easy Upload </a>
