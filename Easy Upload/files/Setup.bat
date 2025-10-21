@@ -1,5 +1,5 @@
 @echo off
-:: BuzzHeavier Upload - Installer/Uninstaller
+:: Easy Upload - Installer/Uninstaller
 :: This script installs or uninstalls the upload feature
 mode con: cols=51 lines=15
 echo =================================================
@@ -27,8 +27,8 @@ echo =================================================
 echo.
 echo What would you like to do?
 echo.
-echo [1] Install BuzzHeavier Upload
-echo [2] Uninstall BuzzHeavier Upload
+echo [1] Install Easy Upload
+echo [2] Uninstall Easy Upload
 echo [3] Exit
 echo.
 echo =================================================
@@ -49,18 +49,18 @@ echo.
 
 echo [1/3] Creating directory...
 :: Create the BuzzHeavier folder in Program Files
-if not exist "C:\Program Files\BuzzHeavier\" (
-    mkdir "C:\Program Files\BuzzHeavier"
-    echo Created: C:\Program Files\BuzzHeavier
+if not exist "C:\Program Files\Easy Upload\" (
+    mkdir "C:\Program Files\Easy Upload"
+    echo Created: C:\Program Files\Easy Upload
 ) else (
-    echo Directory already exists: C:\Program Files\BuzzHeavier
+    echo Directory already exists: C:\Program Files\Easy Upload
 )
 echo.
 
 echo [2/3] Copying upload.bat...
 :: Copy upload.bat from current directory to Program Files
 if exist "%~dp0upload.bat" (
-    copy /Y "%~dp0upload.bat" "C:\Program Files\BuzzHeavier\upload.bat" >nul
+    copy /Y "%~dp0upload.bat" "C:\Program Files\Easy Upload\upload.bat" >nul
     echo Copied: upload.bat
 ) else (
     echo [ERROR] upload.bat not found in current directory!
@@ -73,9 +73,9 @@ echo.
 
 echo [3/3] Adding to registry (right-click menu)...
 :: Add registry entry for context menu
-reg add "HKEY_CLASSES_ROOT\*\shell\BuzzHeavierUpload" /ve /t REG_SZ /d "Easy Upload" /f >nul 2>&1
-reg add "HKEY_CLASSES_ROOT\*\shell\BuzzHeavierUpload" /v "Icon" /t REG_SZ /d "imageres.dll,-1043" /f >nul 2>&1
-reg add "HKEY_CLASSES_ROOT\*\shell\BuzzHeavierUpload\command" /ve /t REG_SZ /d "\"C:\\Program Files\\BuzzHeavier\\upload.bat\" \"%%1\"" /f >nul 2>&1
+reg add "HKEY_CLASSES_ROOT\*\shell\Epiczone" /ve /t REG_SZ /d "Easy Upload" /f >nul 2>&1
+reg add "HKEY_CLASSES_ROOT\*\shell\Epiczone" /v "Icon" /t REG_SZ /d "imageres.dll,-120" /f >nul 2>&1
+reg add "HKEY_CLASSES_ROOT\*\shell\Epiczone\command" /ve /t REG_SZ /d "\"C:\\Program Files\\Easy Upload\\upload.bat\" \"%%1\"" /f >nul 2>&1
 
 if %errorlevel% equ 0 (
     echo Registry entry added successfully!
@@ -90,12 +90,12 @@ echo =================================================
 echo             Installation Complete!
 echo =================================================
 echo.
-echo BuzzHeavier Upload has been installed successfully!
+echo Easy Upload has been installed successfully!
 echo.
 echo To use:
 echo 1. Right-click any file
-echo 2. Select "Upload to BuzzHeavier"
-echo 3. Press 1 to copy the URL after upload
+echo 2. Select "Easy Upload"
+echo 3. Press 1 to copy the URL after the upload finish
 echo.
 color a
 pause
@@ -110,7 +110,7 @@ echo.
 
 echo [1/2] Removing registry entries...
 :: Remove registry entry for context menu
-reg delete "HKEY_CLASSES_ROOT\*\shell\BuzzHeavierUpload" /f >nul 2>&1
+reg delete "HKEY_CLASSES_ROOT\*\shell\Epiczone" /f >nul 2>&1
 
 if %errorlevel% equ 0 (
     echo Registry entries removed successfully!
@@ -120,12 +120,12 @@ if %errorlevel% equ 0 (
 echo.
 
 echo [2/2] Removing files...
-:: Remove the BuzzHeavier folder
-if exist "C:\Program Files\BuzzHeavier\" (
-    rd /s /q "C:\Program Files\BuzzHeavier"
-    echo Deleted: C:\Program Files\BuzzHeavier
+:: Remove the Easy Upload folder
+if exist "C:\Program Files\Easy Upload\" (
+    rd /s /q "C:\Program Files\Easy Upload"
+    echo Deleted: C:\Program Files\Easy Upload
 ) else (
-    echo Directory not found: C:\Program Files\BuzzHeavier
+    echo Directory not found: C:\Program Files\Easy Upload
 )
 echo.
 
