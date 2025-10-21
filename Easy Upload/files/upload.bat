@@ -10,7 +10,7 @@ set "FILENAME=%~nx1"
 :: Display upload header
 cls
 echo ===================================================
-echo             BuzzHeavier File Uploader
+echo                    File Uploader
 echo ===================================================
 echo.
 echo Uploading: %FILENAME%
