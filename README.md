@@ -48,4 +48,4 @@ Upload any file with no limits in two just clicks. (Windows 10/11)
 
 # Note: By using my W Script❤️‍🩹, you agreed to buzzheavier Terms automatically.
 
-<div> </a>                                                                                                   <a> Made with ❤️ </a>
+<div> </a>                                                                                                                           <a> Made with ❤️ </a>
