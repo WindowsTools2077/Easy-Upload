@@ -18,7 +18,13 @@ Upload any file with no limits in two just clicks. (Windows 10/11)
 <a> <a>
 <div> <a> Done, ur good to go now,just right click any file u want and u will see the option there waiting for u to use it :rage3: </a>
 <a> <a></a>
+  
+# Files UP time ⏲️
 
+<div> <a> I used Free account:</a>
+<div> <a> Files start with 8-day life</a>
+<div> <a> Each download adds 2 days (upto 60d)</a>
+<div> <a> Files become permanent with 30+ downloads every 60 days</a>
 
    
 <a> <a>
