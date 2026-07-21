@@ -8,12 +8,9 @@ echo =================================================
 echo.
 
 :: Check for admin rights
-net session >nul 2>&1
+openfiles >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] This script requires Administrator privileges!
-    echo.
-    echo Right-click this file and select "Run as administrator"
-    echo.
     pause
     exit /b 1
 )
