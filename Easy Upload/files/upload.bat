@@ -7,6 +7,9 @@ setlocal enabledelayedexpansion
 set "FILEPATH=%~1"
 set "FILENAME=%~nx1"
 
+:: Mirror list - tried in order until one succeeds
+set "MIRRORS=buzzheavier.com bzzhr.co bzzhr.to"
+
 :: Display upload header
 cls
 echo ===================================================
@@ -16,74 +19,29 @@ echo.
 echo Uploading: %FILENAME%
 echo.
 
-:: Create temporary files
-set "TEMPFILE=%TEMP%\buzzheavier_%RANDOM%.json"
-set "PROGRESSFILE=%TEMP%\buzzheavier_progress_%RANDOM%.txt"
-
 :: URL encode the filename using PowerShell (handles spaces and special chars)
 for /f "delims=" %%a in ('powershell -NoProfile -Command "[uri]::EscapeDataString('%FILENAME%')"') do (
     set "ENCODED_FILENAME=%%a"
 )
 
-:: Upload file with curl
-:: -# shows progress bar (goes to stderr)
-:: -o writes response to file
-:: -T uploads the file
-curl -# -o "%TEMPFILE%" -T "%FILEPATH%" "https://w.buzzheavier.com/!ENCODED_FILENAME!"
+set "UPLOAD_OK=0"
 
-:: Check curl exit code
-if errorlevel 1 (
-    echo.
-    echo [ERROR] Upload failed - curl error!
-    echo.
-    pause
-    del "%TEMPFILE%" 2>nul
-    exit /b 1
+for %%M in (%MIRRORS%) do (
+    if "!UPLOAD_OK!"=="0" (
+        call :TRY_MIRROR "%%M"
+    )
 )
 
-:: Check if we got a response
-if not exist "%TEMPFILE%" (
+if "!UPLOAD_OK!"=="0" (
     echo.
-    echo [ERROR] Upload failed - no response file created!
-    echo.
-    pause
-    exit /b 1
-)
-
-:: Check if file has content
-for %%A in ("%TEMPFILE%") do set "FILESIZE=%%~zA"
-if "%FILESIZE%"=="0" (
-    echo.
-    echo [ERROR] Upload failed - empty response from server!
-    echo.
-    pause
-    del "%TEMPFILE%" 2>nul
-    exit /b 1
-)
-
-:: Use PowerShell to parse JSON properly
-echo.
-echo Parsing response...
-echo.
-
-for /f "delims=" %%a in ('powershell -NoProfile -Command "$json = Get-Content '%TEMPFILE%' | ConvertFrom-Json; $json.data.id"') do (
-    set "FILEID=%%a"
-)
-
-:: Clean up temp file
-del "%TEMPFILE%" 2>nul
-
-:: Check if we got an ID
-if "!FILEID!"=="" (
-    echo.
-    echo [ERROR] Could not extract file ID from response
+    echo [ERROR] Upload failed on all mirrors!
     echo.
     pause
     exit /b 1
 )
 
 :: Construct the URL
-set "FILEURL=https://buzzheavier.com/!FILEID!"
+set "FILEURL=https://!UPLOAD_HOST!/!FILEID!"
 
 :: Display success message
 cls
@@ -93,6 +51,7 @@ echo ===================================================
 echo.
 echo File: %FILENAME%
 echo File ID: !FILEID!
+echo Mirror: !UPLOAD_HOST!
 echo.
 color a
 echo URL: !FILEURL!
@@ -115,4 +74,67 @@ if errorlevel 1 if not errorlevel 2 (
     exit /b 0
 )
 
+exit /b 0
+
+:: ============================================
+:: Subroutine: try uploading to a single mirror
+:: %1 = mirror hostname (e.g. buzzheavier.com)
+:: Sets UPLOAD_OK=1, FILEID, UPLOAD_HOST on success
+:: ============================================
+:TRY_MIRROR
+setlocal
+set "HOST=%~1"
+set "TEMPFILE=%TEMP%\upload_%RANDOM%.json"
+
+echo Trying !HOST!...
+
+curl -# -o "%TEMPFILE%" -T "%FILEPATH%" "https://w.!HOST!/!ENCODED_FILENAME!"
+
+:: Bail out of this attempt on curl error
+if errorlevel 1 (
+    echo [WARN] !HOST! - curl error, trying next mirror...
+    del "%TEMPFILE%" 2>nul
+    endlocal
+    exit /b 1
+)
+
+:: Bail out if no response file
+if not exist "%TEMPFILE%" (
+    echo [WARN] !HOST! - no response, trying next mirror...
+    endlocal
+    exit /b 1
+)
+
+echo [PASS] !HOST! upload complete!
+echo.
+
+:: Bail out if response is empty
+for %%A in ("%TEMPFILE%") do set "FSIZE=%%~zA"
+if "!FSIZE!"=="0" (
+    echo [WARN] !HOST! - empty response, trying next mirror...
+    del "%TEMPFILE%" 2>nul
+    endlocal
+    exit /b 1
+)
+
+:: Try to parse the file ID out of the JSON
+set "PARSED_ID="
+for /f "delims=" %%a in ('powershell -NoProfile -Command "try { $json = Get-Content '%TEMPFILE%' | ConvertFrom-Json; $json.data.id } catch { '' }"') do (
+    set "PARSED_ID=%%a"
+)
+
+del "%TEMPFILE%" 2>nul
+
+if "!PARSED_ID!"=="" (
+    echo [WARN] !HOST! - could not parse file ID, trying next mirror...
+    endlocal
+    exit /b 1
+)
+
+:: Success - pass values back up to the caller
+endlocal & (
+    set "UPLOAD_OK=1"
+    set "FILEID=%PARSED_ID%"
+    set "UPLOAD_HOST=%HOST%"
+)
 exit /b 0
